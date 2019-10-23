@@ -42,11 +42,11 @@ app.use((req, res, next) => {
 routerSetup(app, allController, validator);
 
 // catch 404 and forward to error handler
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   if (err && err.error && err.error.isJoi) {
     return res.invalidInput(err.error.toString());
   }
-  return res._500(err.message, err);
+ next();
 });
 
 // error handler
@@ -62,5 +62,8 @@ app.use((err, req, res) => {
 process.on("uncaughtException", err => {
   console.log("uncaughtException", err);
 });
+
+app.get('*', (req, res) => res.send({ status: false, message: 'Page not found!' }));
+
 
 module.exports = app;
